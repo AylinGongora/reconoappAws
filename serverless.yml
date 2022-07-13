@@ -1,0 +1,37 @@
+# serverless.yml
+
+service: reconoapp-api-application
+custom:
+  allowedHeaders:
+    - Accept
+    - Content-Type
+    - Content-Length
+    - Authorization
+    - X-Amz-Date
+    - X-Api-Key
+    - X-Amz-Security-Token
+    - X-Amz-User-Agent
+  dbDatasource: /reconoapp/desa/database/reconoapp-db-datasource
+plugins:
+  - serverless-offline
+
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  profile: reconoapp
+  region: us-east-1
+  environment:
+        DB_DATASOURCE: ${self:custom.dbDatasource}
+
+functions:
+  consultar:
+      handler: src/handler/UsuarioHandler.consultarUsuario
+      events:
+        - http:
+            path: /usuario/consultar
+            method: post
+            cors:
+              origin: '*'
+              headers: ${self:custom.allowedHeaders}
