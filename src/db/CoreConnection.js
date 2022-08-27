@@ -7,26 +7,29 @@ const crypto = require('crypto')
 let con = null;
 
 class CoreConnection {
-    static async obtenerPool(usuario, password) {
+
+    static async getCon(){
         const paramSt = process.env.DB_DATASOURCE;
         const databaseParam = await loadParameters(paramSt);
         const datasource = JSON.parse(databaseParam);
-        /*console.log("datasource",datasource);
-        console.log("usuario",usuario);
-        console.log("password",password);*/
-
-        var dbconfig = {
+        const dbconfig= {
             user: datasource.user,
             password: datasource.password,
             host: datasource.host,
             database: datasource.database
         };
-
-        
-        con = await mysql.createConnection(dbconfig);
+        return await mysql.createConnection(dbconfig);
+    }
+    static async obtenerPool(usuario, password) {
+        con = await this.getCon();
         var shasum = crypto.createHash('sha1')
         shasum.update(password)
         var shapass = shasum.digest('hex')
+        
+        var response = {
+            code :'',
+            message : "",
+        }
 
         const queryPromise = new Promise((resolve, reject) => {
           con.query("SELECT * FROM Usuario where email = ? and password = ?",[usuario,shapass], (error, results) => {
@@ -40,9 +43,77 @@ class CoreConnection {
 
         const result = await queryPromise;
 
-        return result[0]!=null? 1:0
+        if(result[0] != null){
+            const persona = result[0];
+            response.code = "success"
+            response.message = persona.nombre + " " +persona.apellidos
 
+          }else{
+            response.code = 'error'
+            response.message = 'No existe persona'
+          }
+
+        return response
+
+    };
+    static async validacionTarjeta(tarjeta) {
+        const {pan,fechaVenc} = tarjeta;
+        var response = {
+            code :'success',
+            message : "Verificación Exitosa",
+        }
+        con = await this.getCon();
+        console.log('pan:',pan)
+        var dt = new Date();
+        const fechaTarjeta = fechaVenc?.split('/');
+        //const fecTarj = fechaTarjeta[1] + fechaTarjeta[0];
+        const fecTarj = fechaTarjeta[1];
+
+        const year  = (dt.getFullYear()+5).toString().substr(-2);
+        const month = (dt.getMonth() + 1).toString().padStart(2, "0");
+        //let fechaActual = year + month;
+        let fechaActual = year;
+
+        console.log("fechaActual:",fechaActual)
+        console.log("fecTarj",fecTarj)
+        console.log("fecTarj - fechaActual:",(fecTarj - fechaActual))
+        
+
+        if(fecTarj - fechaActual != 0){
+            response.code = 'error'
+            response.message = 'Fecha actual no corresponde'
+            return response
+        }
+
+        const queryPromise = new Promise((resolve, reject) => {
+            con.query("SELECT * FROM Tarjeta where pan = ? ",[pan], (error, results) => {
+                if (error) {
+                    Logger.debug(error);
+                    reject(error);
+                }
+                resolve(results);
+            });
+          });
+  
+          const result = await queryPromise;
+
+          if(result[0] != null){
+            const tarjeta = result[0];
+
+            if(tarjeta.fechaVenc != fechaVenc){
+                response.code = 'error'
+                response.message = 'Fecha de vencimiento no coincide en base datos'
+                return response
+            }           
+
+          }else{
+            response.code = 'error'
+            response.message = 'No existe tarjeta'
+          }
+  
+          return response
 
     }
+
 }
 module.exports = { CoreConnection };

@@ -15,6 +15,7 @@
   "dependencies": {
     "axios": "^0.24.0",
     "crypto": "^1.0.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "serverless": "^2.35.0"
   }
 }

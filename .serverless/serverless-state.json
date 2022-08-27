@@ -6,7 +6,7 @@
     },
     "provider": {
       "name": "aws",
-      "runtime": "nodejs12.x",
+      "runtime": "nodejs14.x",
       "stage": "dev",
       "profile": "reconoapp",
       "region": "us-east-1",
@@ -94,6 +94,12 @@
               "LogGroupName": "/aws/lambda/reconoapp-api-application-dev-consultar"
             }
           },
+          "ValidaTarjetaLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/reconoapp-api-application-dev-validaTarjeta"
+            }
+          },
           "IamRoleLambdaExecution": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -178,10 +184,10 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/reconoapp-api-application/dev/1657756198707-2022-07-13T23:49:58.707Z/reconoapp-api-application.zip"
+                "S3Key": "serverless/reconoapp-api-application/dev/1661547404464-2022-08-26T20:56:44.464Z/reconoapp-api-application.zip"
               },
               "Handler": "src/handler/UsuarioHandler.consultarUsuario",
-              "Runtime": "nodejs12.x",
+              "Runtime": "nodejs14.x",
               "FunctionName": "reconoapp-api-application-dev-consultar",
               "MemorySize": 1024,
               "Timeout": 6,
@@ -201,14 +207,54 @@
               "ConsultarLogGroup"
             ]
           },
-          "ConsultarLambdaVersionPYoiefcJrdTinRqpTdquTbfs7dToU2nfWrWqMWQd9o": {
+          "ValidaTarjetaLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/reconoapp-api-application/dev/1661547404464-2022-08-26T20:56:44.464Z/reconoapp-api-application.zip"
+              },
+              "Handler": "src/handler/UsuarioHandler.validaTarjeta",
+              "Runtime": "nodejs14.x",
+              "FunctionName": "reconoapp-api-application-dev-validaTarjeta",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "DB_DATASOURCE": "/reconoapp/desa/database/reconoapp-db-datasource"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "ValidaTarjetaLogGroup"
+            ]
+          },
+          "ValidaTarjetaLambdaVersionw716igS5KJvWmdZSOQQtixIqFJiS7b7NpvGtMkTEs": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ValidaTarjetaLambdaFunction"
+              },
+              "CodeSha256": "rIdpZSuY6v64TwC3KfoFbAbHkmRcRBu5/lZBGgNtNiA="
+            }
+          },
+          "ConsultarLambdaVersionzgFsjPe7DiVWJk6gIEHof8KunhJcCBrVrESuoRxE": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ConsultarLambdaFunction"
               },
-              "CodeSha256": "Ub66dBz0Zy5CH95JHM95oGq0GiGT8c4MRVptMrq5yDU="
+              "CodeSha256": "rIdpZSuY6v64TwC3KfoFbAbHkmRcRBu5/lZBGgNtNiA="
             }
           },
           "ApiGatewayRestApi": {
@@ -245,6 +291,33 @@
                 "Ref": "ApiGatewayResourceUsuario"
               },
               "PathPart": "consultar",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceTarjeta": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "tarjeta",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceTarjetaValidar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceTarjeta"
+              },
+              "PathPart": "validar",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -295,6 +368,51 @@
               }
             }
           },
+          "ApiGatewayMethodTarjetaValidarOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Accept,Content-Type,Content-Length,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceTarjetaValidar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
           "ApiGatewayMethodUsuarioConsultarPost": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
@@ -338,7 +456,50 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1657756195547": {
+          "ApiGatewayMethodTarjetaValidarPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceTarjetaValidar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "ValidaTarjetaLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1661547334806": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -348,7 +509,9 @@
             },
             "DependsOn": [
               "ApiGatewayMethodUsuarioConsultarOptions",
-              "ApiGatewayMethodUsuarioConsultarPost"
+              "ApiGatewayMethodTarjetaValidarOptions",
+              "ApiGatewayMethodUsuarioConsultarPost",
+              "ApiGatewayMethodTarjetaValidarPost"
             ]
           },
           "ConsultarLambdaPermissionApiGateway": {
@@ -387,6 +550,43 @@
                 ]
               }
             }
+          },
+          "ValidaTarjetaLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ValidaTarjetaLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
           }
         },
         "Outputs": {
@@ -395,10 +595,16 @@
               "Ref": "ServerlessDeploymentBucket"
             }
           },
+          "ValidaTarjetaLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ValidaTarjetaLambdaVersionw716igS5KJvWmdZSOQQtixIqFJiS7b7NpvGtMkTEs"
+            }
+          },
           "ConsultarLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ConsultarLambdaVersionPYoiefcJrdTinRqpTdquTbfs7dToU2nfWrWqMWQd9o"
+              "Ref": "ConsultarLambdaVersionzgFsjPe7DiVWJk6gIEHof8KunhJcCBrVrESuoRxE"
             }
           },
           "ServiceEndpoint": {
@@ -561,9 +767,46 @@
         "package": {},
         "memory": 1024,
         "timeout": 6,
-        "runtime": "nodejs12.x",
+        "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "ConsultarLambdaVersionPYoiefcJrdTinRqpTdquTbfs7dToU2nfWrWqMWQd9o"
+        "versionLogicalId": "ConsultarLambdaVersionzgFsjPe7DiVWJk6gIEHof8KunhJcCBrVrESuoRxE"
+      },
+      "validaTarjeta": {
+        "handler": "src/handler/UsuarioHandler.validaTarjeta",
+        "events": [
+          {
+            "http": {
+              "path": "tarjeta/validar",
+              "method": "post",
+              "cors": {
+                "origin": "*",
+                "headers": [
+                  "Accept",
+                  "Content-Type",
+                  "Content-Length",
+                  "Authorization",
+                  "X-Amz-Date",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "methods": [
+                  "OPTIONS",
+                  "POST"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "reconoapp-api-application-dev-validaTarjeta",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs14.x",
+        "vpc": {},
+        "versionLogicalId": "ValidaTarjetaLambdaVersionw716igS5KJvWmdZSOQQtixIqFJiS7b7NpvGtMkTEs"
       }
     },
     "configValidationMode": "warn",
@@ -590,7 +833,7 @@
     "artifact": "D:\\Aylin\\aws\\reconoapp\\.serverless\\reconoapp-api-application.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/reconoapp-api-application/dev/1657756198707-2022-07-13T23:49:58.707Z",
+    "artifactDirectoryName": "serverless/reconoapp-api-application/dev/1661547404464-2022-08-26T20:56:44.464Z",
     "artifact": "reconoapp-api-application.zip"
   }
 }

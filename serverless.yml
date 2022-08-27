@@ -18,7 +18,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   stage: dev
   profile: reconoapp
   region: us-east-1
@@ -31,6 +31,15 @@ functions:
       events:
         - http:
             path: /usuario/consultar
+            method: post
+            cors:
+              origin: '*'
+              headers: ${self:custom.allowedHeaders}
+  validaTarjeta:
+      handler: src/handler/UsuarioHandler.validaTarjeta
+      events:
+        - http:
+            path: /tarjeta/validar
             method: post
             cors:
               origin: '*'
