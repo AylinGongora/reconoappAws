@@ -56,8 +56,8 @@ class CoreConnection {
         return response
 
     };
-    static async validacionTarjeta(tarjeta) {
-        const {pan,fechaVenc} = tarjeta;
+    static async validacionTarjeta(tarjeta, nombres) {
+        const {pan, fechaVenc, panPorc, fecPorc, cvc, cvcPorc} = tarjeta;
         var response = {
             code :'success',
             message : "Verificación Exitosa",
@@ -85,7 +85,7 @@ class CoreConnection {
             return response
         }
 
-        const queryPromise = new Promise((resolve, reject) => {
+        var queryPromise = new Promise((resolve, reject) => {
             con.query("SELECT * FROM Tarjeta where pan = ? ",[pan], (error, results) => {
                 if (error) {
                     Logger.debug(error);
@@ -93,25 +93,109 @@ class CoreConnection {
                 }
                 resolve(results);
             });
-          });
+        });
   
-          const result = await queryPromise;
+        var result = await queryPromise;
 
-          if(result[0] != null){
-            const tarjeta = result[0];
+        if(result[0] != null){
+        const tarjeta = result[0];
 
-            if(tarjeta.fechaVenc != fechaVenc){
-                response.code = 'error'
-                response.message = 'Fecha de vencimiento no coincide en base datos'
-                return response
-            }           
+        if(tarjeta.fechaVenc != fechaVenc){
+            response.code = 'error'
+            response.message = 'Fecha de vencimiento no coincide en base datos'
+            return response
+        }
 
-          }else{
+        if(tarjeta.cvc != cvc){
+            response.code = 'error'
+            response.message = 'CVC no existe en base de datos'
+            return response
+        }
+
+        var nombreTarjetaExiste = {
+            nombre: null,
+            porcentaje: null
+        }
+
+        for(let nombreTarjeta of nombres){
+            console.log("nombreTarjeta", nombreTarjeta)
+            if(nombreTarjeta.nombre == tarjeta.nombre){
+                nombreTarjetaExiste.nombre = nombreTarjeta.nombre
+                nombreTarjetaExiste.porcentaje = nombreTarjeta.porcentaje
+            }
+        }
+
+        console.log("nombreTarjetaExiste",nombreTarjetaExiste)
+
+        if(nombreTarjetaExiste.nombre == null){
+            response.code = 'error'
+            response.message = 'Nombre de Tarjeta no existe'
+            return response
+        }
+
+
+        }else{
             response.code = 'error'
             response.message = 'No existe tarjeta'
-          }
+            return response
+        }
+
+        //Validación porcentajes
+        //Porcentaje Pan
+        queryPromise = new Promise((resolve, reject) => {
+            con.query("SELECT * from Tarjeta_config where codigo = 'pan' AND ? >= porcentaje",[panPorc], (error, results) => {
+                if (error) {
+                    Logger.debug(error);
+                    reject(error);
+                }
+                resolve(results);
+            });
+        });
   
-          return response
+        result = await queryPromise;
+        if(result[0] == null){
+            response.code = 'error'
+            response.message = 'Porcentaje Pan no válido'
+            return response
+        }
+
+        //Porcentaje fechaVenc
+        queryPromise = new Promise((resolve, reject) => {
+            con.query("SELECT * from Tarjeta_config where codigo = 'fechaVenc' AND ? >= porcentaje",[fecPorc], (error, results) => {
+                if (error) {
+                    Logger.debug(error);
+                    reject(error);
+                }
+                resolve(results);
+            });
+        });
+  
+        result = await queryPromise;
+        if(result[0] == null){
+            response.code = 'error'
+            response.message = 'Porcentaje Fecha Vencimiento no válido'
+            return response
+        }
+
+        //Porcentaje CVC
+        queryPromise = new Promise((resolve, reject) => {
+            con.query("SELECT * from Tarjeta_config where codigo = 'cvc' AND ? >= porcentaje",[cvcPorc], (error, results) => {
+                if (error) {
+                    Logger.debug(error);
+                    reject(error);
+                }
+                resolve(results);
+            });
+        });
+  
+        result = await queryPromise;
+        if(result[0] == null){
+            response.code = 'error'
+            response.message = 'Porcentaje CVC no válido'
+            return response
+        }
+
+        return response
 
     }
 

@@ -39,7 +39,7 @@ module.exports =  {
         var tarjeta = JSON.parse(event.body);
         //var tarjeta = event;
 
-        var result = await CoreConnection.validacionTarjeta(tarjeta.tarjeta);
+        var result = await CoreConnection.validacionTarjeta(tarjeta.tarjeta, tarjeta.nombres);
         
         const response = {
         statusCode: 200,

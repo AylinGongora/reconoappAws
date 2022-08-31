@@ -167,7 +167,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/reconoapp-api-application/dev/1661547404464-2022-08-26T20:56:44.464Z/reconoapp-api-application.zip"
+          "S3Key": "serverless/reconoapp-api-application/dev/1661905924500-2022-08-31T00:32:04.500Z/reconoapp-api-application.zip"
         },
         "Handler": "src/handler/UsuarioHandler.consultarUsuario",
         "Runtime": "nodejs14.x",
@@ -197,7 +197,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/reconoapp-api-application/dev/1661547404464-2022-08-26T20:56:44.464Z/reconoapp-api-application.zip"
+          "S3Key": "serverless/reconoapp-api-application/dev/1661905924500-2022-08-31T00:32:04.500Z/reconoapp-api-application.zip"
         },
         "Handler": "src/handler/UsuarioHandler.validaTarjeta",
         "Runtime": "nodejs14.x",
@@ -220,24 +220,24 @@
         "ValidaTarjetaLogGroup"
       ]
     },
-    "ValidaTarjetaLambdaVersionw716igS5KJvWmdZSOQQtixIqFJiS7b7NpvGtMkTEs": {
-      "Type": "AWS::Lambda::Version",
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "ValidaTarjetaLambdaFunction"
-        },
-        "CodeSha256": "rIdpZSuY6v64TwC3KfoFbAbHkmRcRBu5/lZBGgNtNiA="
-      }
-    },
-    "ConsultarLambdaVersionzgFsjPe7DiVWJk6gIEHof8KunhJcCBrVrESuoRxE": {
+    "ConsultarLambdaVersiongC1ih4GtCst7YxK6QN20cAjtBoarwyufEdWoxm7Lo": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ConsultarLambdaFunction"
         },
-        "CodeSha256": "rIdpZSuY6v64TwC3KfoFbAbHkmRcRBu5/lZBGgNtNiA="
+        "CodeSha256": "2ItCxcCxW3J02tephL0u2v5U6C9wrb0oQF1fzbPPM2Y="
+      }
+    },
+    "ValidaTarjetaLambdaVersionBcmCeBvpu2Oymciuf4yp08W1fV2Kqp43F77SJYGEbU": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "ValidaTarjetaLambdaFunction"
+        },
+        "CodeSha256": "2ItCxcCxW3J02tephL0u2v5U6C9wrb0oQF1fzbPPM2Y="
       }
     },
     "ApiGatewayRestApi": {
@@ -482,7 +482,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1661547334806": {
+    "ApiGatewayDeployment1661905913763": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -578,16 +578,16 @@
         "Ref": "ServerlessDeploymentBucket"
       }
     },
-    "ValidaTarjetaLambdaFunctionQualifiedArn": {
-      "Description": "Current Lambda function version",
-      "Value": {
-        "Ref": "ValidaTarjetaLambdaVersionw716igS5KJvWmdZSOQQtixIqFJiS7b7NpvGtMkTEs"
-      }
-    },
     "ConsultarLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ConsultarLambdaVersionzgFsjPe7DiVWJk6gIEHof8KunhJcCBrVrESuoRxE"
+        "Ref": "ConsultarLambdaVersiongC1ih4GtCst7YxK6QN20cAjtBoarwyufEdWoxm7Lo"
+      }
+    },
+    "ValidaTarjetaLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "ValidaTarjetaLambdaVersionBcmCeBvpu2Oymciuf4yp08W1fV2Kqp43F77SJYGEbU"
       }
     },
     "ServiceEndpoint": {
