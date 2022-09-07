@@ -121,7 +121,7 @@ class CoreConnection {
             console.log("nombreTarjeta", nombreTarjeta)
             if(nombreTarjeta.nombre == tarjeta.nombre){
                 nombreTarjetaExiste.nombre = nombreTarjeta.nombre
-                nombreTarjetaExiste.porcentaje = nombreTarjeta.porcentaje
+                nombreTarjetaExiste.porcentaje = nombreTarjeta.porcentaje?.split('.')[0]
             }
         }
 
@@ -155,7 +155,7 @@ class CoreConnection {
         result = await queryPromise;
         if(result[0] == null){
             response.code = 'error'
-            response.message = 'Porcentaje Pan no válido'
+            response.message = '% Pan no válido'
             return response
         }
 
@@ -173,7 +173,7 @@ class CoreConnection {
         result = await queryPromise;
         if(result[0] == null){
             response.code = 'error'
-            response.message = 'Porcentaje Fecha Vencimiento no válido'
+            response.message = '% Fecha Vencimiento no válido'
             return response
         }
 
@@ -191,7 +191,43 @@ class CoreConnection {
         result = await queryPromise;
         if(result[0] == null){
             response.code = 'error'
-            response.message = 'Porcentaje CVC no válido'
+            response.message = '% CVC no válido'
+            return response
+        }
+
+        //Porcentaje Nombre Tarjeta
+        queryPromise = new Promise((resolve, reject) => {
+            con.query("SELECT * from Tarjeta_config where codigo = 'nombre' AND ? >= porcentaje",[nombreTarjetaExiste.porcentaje], (error, results) => {
+                if (error) {
+                    Logger.debug(error);
+                    reject(error);
+                }
+                resolve(results);
+            });
+        });
+  
+        result = await queryPromise;
+        if(result[0] == null){
+            response.code = 'error'
+            response.message = '% Nombre Tarjeta no válido'
+            return response
+        }
+
+        //Validación tarjeta duplicada
+        queryPromise = new Promise((resolve, reject) => {
+            con.query("SELECT * from Tarjeta_registrada where pan = ? AND stsTarjeta = 'A'",[pan], (error, results) => {
+                if (error) {
+                    Logger.debug(error);
+                    reject(error);
+                }
+                resolve(results);
+            });
+        });
+  
+        result = await queryPromise;
+        if(result[0] != null){
+            response.code = 'error'
+            response.message = 'Tarjeta Duplicada'
             return response
         }
 

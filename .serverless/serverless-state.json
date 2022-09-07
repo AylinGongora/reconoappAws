@@ -184,7 +184,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/reconoapp-api-application/dev/1661905924500-2022-08-31T00:32:04.500Z/reconoapp-api-application.zip"
+                "S3Key": "serverless/reconoapp-api-application/dev/1662518898518-2022-09-07T02:48:18.518Z/reconoapp-api-application.zip"
               },
               "Handler": "src/handler/UsuarioHandler.consultarUsuario",
               "Runtime": "nodejs14.x",
@@ -214,7 +214,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/reconoapp-api-application/dev/1661905924500-2022-08-31T00:32:04.500Z/reconoapp-api-application.zip"
+                "S3Key": "serverless/reconoapp-api-application/dev/1662518898518-2022-09-07T02:48:18.518Z/reconoapp-api-application.zip"
               },
               "Handler": "src/handler/UsuarioHandler.validaTarjeta",
               "Runtime": "nodejs14.x",
@@ -237,24 +237,24 @@
               "ValidaTarjetaLogGroup"
             ]
           },
-          "ConsultarLambdaVersiongC1ih4GtCst7YxK6QN20cAjtBoarwyufEdWoxm7Lo": {
+          "ConsultarLambdaVersionmBLgcXUVvXsgO9R7lMipqO5NSunx9nXxzNPlD9PL4": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ConsultarLambdaFunction"
               },
-              "CodeSha256": "2ItCxcCxW3J02tephL0u2v5U6C9wrb0oQF1fzbPPM2Y="
+              "CodeSha256": "2TyUXHALbz1Pney9MK6quJAZccuHGNWFEHLQhodaY9E="
             }
           },
-          "ValidaTarjetaLambdaVersionBcmCeBvpu2Oymciuf4yp08W1fV2Kqp43F77SJYGEbU": {
+          "ValidaTarjetaLambdaVersionp1alYzFrGaeIEGu1Jt3rLRjlJ4OjKjWfiuE8JVMDdE": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ValidaTarjetaLambdaFunction"
               },
-              "CodeSha256": "2ItCxcCxW3J02tephL0u2v5U6C9wrb0oQF1fzbPPM2Y="
+              "CodeSha256": "2TyUXHALbz1Pney9MK6quJAZccuHGNWFEHLQhodaY9E="
             }
           },
           "ApiGatewayRestApi": {
@@ -499,7 +499,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1661905913763": {
+          "ApiGatewayDeployment1662518826523": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -598,13 +598,13 @@
           "ConsultarLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ConsultarLambdaVersiongC1ih4GtCst7YxK6QN20cAjtBoarwyufEdWoxm7Lo"
+              "Ref": "ConsultarLambdaVersionmBLgcXUVvXsgO9R7lMipqO5NSunx9nXxzNPlD9PL4"
             }
           },
           "ValidaTarjetaLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ValidaTarjetaLambdaVersionBcmCeBvpu2Oymciuf4yp08W1fV2Kqp43F77SJYGEbU"
+              "Ref": "ValidaTarjetaLambdaVersionp1alYzFrGaeIEGu1Jt3rLRjlJ4OjKjWfiuE8JVMDdE"
             }
           },
           "ServiceEndpoint": {
@@ -769,7 +769,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "ConsultarLambdaVersiongC1ih4GtCst7YxK6QN20cAjtBoarwyufEdWoxm7Lo"
+        "versionLogicalId": "ConsultarLambdaVersionmBLgcXUVvXsgO9R7lMipqO5NSunx9nXxzNPlD9PL4"
       },
       "validaTarjeta": {
         "handler": "src/handler/UsuarioHandler.validaTarjeta",
@@ -806,7 +806,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "ValidaTarjetaLambdaVersionBcmCeBvpu2Oymciuf4yp08W1fV2Kqp43F77SJYGEbU"
+        "versionLogicalId": "ValidaTarjetaLambdaVersionp1alYzFrGaeIEGu1Jt3rLRjlJ4OjKjWfiuE8JVMDdE"
       }
     },
     "configValidationMode": "warn",
@@ -833,7 +833,7 @@
     "artifact": "D:\\Aylin\\aws\\reconoapp\\.serverless\\reconoapp-api-application.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/reconoapp-api-application/dev/1661905924500-2022-08-31T00:32:04.500Z",
+    "artifactDirectoryName": "serverless/reconoapp-api-application/dev/1662518898518-2022-09-07T02:48:18.518Z",
     "artifact": "reconoapp-api-application.zip"
   }
 }
